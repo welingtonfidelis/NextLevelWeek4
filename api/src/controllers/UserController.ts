@@ -1,50 +1,47 @@
 import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
 import { UserRepository } from '../repositories/UserRepository';
+import * as yup from 'yup';
+import { AppError } from '../errors/AppError';
 
 class UserController {
   async create(request: Request, response: Response) {
-    try {
-      const { name, email } = request.body;
-  
-      const userRepository = getCustomRepository(UserRepository);
-  
-      const userAllReadyExists = await userRepository.findOne({ email });
+    const { name, email } = request.body;
 
-      if (userAllReadyExists) {
-        return response.status(400).json({
-          error: 'Email alread in use'
-        });
-      }
+    const schema = yup.object().shape({
+      name: yup.string().required(),
+      email: yup.string().email().required(),
+    });
 
-      const user = userRepository.create({
-        name, email
-      });
+    // await schema.validate(request.body, { abortEarly: false });
 
-      await userRepository.save(user);
-  
-      return response.status(201).json(user);
-      
-    } catch (error) {
-      console.log(error);
-
-      return response.status(error.status || 500).json(error.message || error);
+    if (!(await schema.isValid(request.body, { abortEarly: false }))) {
+      throw new AppError("Validation failed!");
     }
+
+    const userRepository = getCustomRepository(UserRepository);
+
+    const userAllReadyExists = await userRepository.findOne({ email });
+
+    if (userAllReadyExists) {
+      throw new AppError("Email alread in use!");
+    }
+
+    const user = userRepository.create({
+      name, email
+    });
+
+    await userRepository.save(user);
+
+    return response.status(201).json(user);
   }
 
   async index(request: Request, response: Response) {
-    try {
-      const userRepository = getCustomRepository(UserRepository);
+    const userRepository = getCustomRepository(UserRepository);
 
-      const users = await userRepository.find();
+    const users = await userRepository.find();
 
-      return response.json(users);
-
-    } catch (error) {
-      console.log(error);
-
-      return response.status(error.status || 500).json(error.message || error);
-    }
+    return response.json(users);
   }
 }
 
