@@ -11,6 +11,9 @@ Esse projeto é resultado da quarta **Next Level Week** da equipe RocketSeat. Ne
 
 Após clonar este projeto, crie um arquivo *.env* na raíz deste, seguindo o exemplo de variáveis de ambiente e seus valores no arquivo *.env.example* também na raíz do projeto. Em seguida, no seu terminal de comandos execute o comando `npm install` para instalação das dependências necessárias ao projeto, depois deste comando, execute também *npm run typeorm migration:run*, para que o arquivo do banco de dados, o próprio banco e suas tabelas sejam criados. Quase pronto, ainda em segu terminal, execute o comando *npm run dev* para que o servidor comece a executar e fique disponível na porta **3001** (esta porta pode ser alterada no arquivo src/server.ts).
 
+## Testes
+A API possui um conjunto de testes, os quais é possível executar através do comando *npm test*. Se tudo estiver configurado corretamente, os testes serão executados e terão sucesso.
+
 ## Utilização
 Caso esteja usando o [Postman], pode acessar [este link] para baixar uma collection contendo as rotas possíveis para uso da api.
 
